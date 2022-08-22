@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  mongo-setup:
+    container_name: mongo-setup
+    image: mongo:5.0
+    restart: on-failure
+    networks:
+      default:
+    volumes:
+      - ./scripts:/scripts
+    entrypoint: [ "/scripts/setup.sh" ] # Make sure this file exists (see below for the setup.sh)
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+  
+  mongo1:
+    hostname: mongo1
+    container_name: localmongo1
+    image: mongo:5.0
+    expose:
+      - 27017
+    ports:
+      - 27017:27017
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+    volumes:
+      - ./mongo/data1/db:/data/db # This is where your volume will persist. e.g. VOLUME-DIR = ./volumes/mongodb
+      - ./mongo/data1/configdb:/data/configdb
+  mongo2:
+    hostname: mongo2
+    container_name: localmongo2
+    image: mongo:5.0
+    expose:
+      - 27017
+    ports:
+      - 27018:27017
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+    volumes:
+      - ./mongo/data2/db:/data/db # Note the data2, it must be different to the original set.
+      - ./mongo/data2/configdb:/data/configdb
+  mongo3:
+    hostname: mongo3
+    container_name: localmongo3
+    image: mongo:5.0
+    expose:
+      - 27017
+    ports:
+      - 27019:27017
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+    volumes:
+      - ./mongo/data3/db:/data/db
+      - ./mongo/data3/configdb:/data/configdb
