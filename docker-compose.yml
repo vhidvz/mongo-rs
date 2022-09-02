@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.4'
 
 services:
   mongo-setup:
@@ -24,7 +24,7 @@ services:
     ports:
       - 27017:27017
     restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0", "--journal", "--dbpath", "/data/db" ]
     volumes:
       - ./mongo/data1/db:/data/db # This is where your volume will persist. e.g. VOLUME-DIR = ./volumes/mongodb
       - ./mongo/data1/configdb:/data/configdb
@@ -37,7 +37,7 @@ services:
     ports:
       - 27018:27017
     restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0", "--journal", "--dbpath", "/data/db" ]
     volumes:
       - ./mongo/data2/db:/data/db # Note the data2, it must be different to the original set.
       - ./mongo/data2/configdb:/data/configdb
@@ -50,7 +50,7 @@ services:
     ports:
       - 27019:27017
     restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0", "--journal", "--dbpath", "/data/db" ]
     volumes:
       - ./mongo/data3/db:/data/db
       - ./mongo/data3/configdb:/data/configdb
