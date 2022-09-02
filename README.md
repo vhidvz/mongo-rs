@@ -17,3 +17,7 @@ Add this lines to `/etc/hosts`:
 ## Connection
 
 `mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?authSource=admin&readPreference=primary&ssl=false&replicaSet=rs0`
+
+### Reference
+
+- https://gist.github.com/harveyconnor/518e088bad23a273cae6ba7fc4643549
