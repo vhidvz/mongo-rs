@@ -3,7 +3,7 @@
 Mongo replication set with three nodes, run and start with docker compose:
 
 ```sh
-sh ./docker
+sh ./docker.sh
 ```
 
 Add this lines to `/etc/hosts`:
@@ -16,6 +16,4 @@ Add this lines to `/etc/hosts`:
 
 ## Connection
 
-> `
-mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?authSource=admin&readPreference=primary&ssl=false&replicaSet=rs0
-`
+`mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?authSource=admin&readPreference=primary&ssl=false&replicaSet=rs0`
