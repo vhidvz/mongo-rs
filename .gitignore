@@ -1,1 +1,2 @@
-mongo/
+mongo/primary/data/db/*
+!mongo/primary/data/db/.gitkeep

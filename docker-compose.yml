@@ -1,56 +1,83 @@
-version: '3.4'
+version: "2"
 
 services:
-  mongo-setup:
-    container_name: mongo-setup
-    image: mongo:6.0
-    restart: on-failure
+  mongodb-primary:
+    image: "bitnami/mongodb:6.0"
+    container_name: mongodb-primary
+    hostname: mongodb-primary
     networks:
       default:
-    volumes:
-      - ./scripts:/scripts
-    entrypoint: [ "/scripts/setup.sh" ] # Make sure this file exists (see below for the setup.sh)
-    depends_on:
-      - mongo1
-      - mongo2
-      - mongo3
-  
-  mongo1:
-    hostname: mongo1
-    container_name: localmongo1
-    image: mongo:6.0
     expose:
       - 27017
     ports:
       - 27017:27017
-    restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0", "--journal", "--dbpath", "/data/db" ]
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_NAME=rs0
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
     volumes:
-      - ./mongo/data1/db:/data/db # This is where your volume will persist. e.g. VOLUME-DIR = ./volumes/mongodb
-      - ./mongo/data1/configdb:/data/configdb
-  mongo2:
-    hostname: mongo2
-    container_name: localmongo2
-    image: mongo:6.0
+      - "./mongo/primary:/bitnami/mongodb"
+
+  mongodb-secondary-1:
+    image: "bitnami/mongodb:6.0"
+    container_name: mongodb-secondary-1
+    hostname: mongodb-secondary-1
+    depends_on:
+      - mongodb-primary
+    networks:
+      default:
     expose:
-      - 27017
+      - 27018
     ports:
       - 27018:27017
-    restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0", "--journal", "--dbpath", "/data/db" ]
-    volumes:
-      - ./mongo/data2/db:/data/db # Note the data2, it must be different to the original set.
-      - ./mongo/data2/configdb:/data/configdb
-  mongo3:
-    hostname: mongo3
-    container_name: localmongo3
-    image: mongo:6.0
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary-1
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_NAME=rs0
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+  mongodb-secondary-2:
+    image: "bitnami/mongodb:6.0"
+    container_name: mongodb-secondary-2
+    hostname: mongodb-secondary-2
+    depends_on:
+      - mongodb-primary
+    networks:
+      default:
     expose:
-      - 27017
+      - 27019
     ports:
       - 27019:27017
-    restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0", "--journal", "--dbpath", "/data/db" ]
-    volumes:
-      - ./mongo/data3/db:/data/db
-      - ./mongo/data3/configdb:/data/configdb
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary-2
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_NAME=rs0
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+
+  mongodb-arbiter:
+    image: "bitnami/mongodb:6.0"
+    container_name: mongodb-arbiter
+    hostname: mongodb-arbiter
+    depends_on:
+      - mongodb-primary
+    networks:
+      default:
+    expose:
+      - 27020
+    ports:
+      - 27020:27017
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-arbiter
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_NAME=rs0
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
