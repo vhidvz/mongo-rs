@@ -13,6 +13,8 @@ sudo chown -R 1001 mongo
 docker-compose up -d 
 ```
 
+> NOTE: It will take time to initiate for first time 
+
 Add this lines to `/etc/hosts`:
 
 ```sh
