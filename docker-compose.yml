@@ -20,68 +20,64 @@ services:
       - BITNAMI_DEBUG=true
     volumes:
       - "./mongo/primary:/bitnami"
-    # user: 1000:1000
-    # entrypoint: /opt/bitnami/scripts/mongodb/entrypoint.sh
-    # command: /opt/bitnami/scripts/mongodb/run.sh
+  mongodb-secondary-1:
+    image: "bitnami/mongodb:6.0"
+    container_name: mongodb-secondary-1
+    hostname: mongodb-secondary-1
+    depends_on:
+      - mongodb-primary
+    networks:
+      default:
+    expose:
+      - 27018
+    ports:
+      - 27018:27017
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary-1
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_NAME=rs0
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+  mongodb-secondary-2:
+    image: "bitnami/mongodb:6.0"
+    container_name: mongodb-secondary-2
+    hostname: mongodb-secondary-2
+    depends_on:
+      - mongodb-primary
+    networks:
+      default:
+    expose:
+      - 27019
+    ports:
+      - 27019:27017
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary-2
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_NAME=rs0
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
 
-  # mongodb-secondary-1:
-  #   image: "bitnami/mongodb:6.0"
-  #   container_name: mongodb-secondary-1
-  #   hostname: mongodb-secondary-1
-  #   depends_on:
-  #     - mongodb-primary
-  #   networks:
-  #     default:
-  #   expose:
-  #     - 27018
-  #   ports:
-  #     - 27018:27017
-  #   environment:
-  #     - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary-1
-  #     - MONGODB_REPLICA_SET_MODE=secondary
-  #     - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
-  #     - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
-  #     - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
-  #     - MONGODB_REPLICA_SET_NAME=rs0
-  #     - MONGODB_REPLICA_SET_KEY=replicasetkey123
-  # mongodb-secondary-2:
-  #   image: "bitnami/mongodb:6.0"
-  #   container_name: mongodb-secondary-2
-  #   hostname: mongodb-secondary-2
-  #   depends_on:
-  #     - mongodb-primary
-  #   networks:
-  #     default:
-  #   expose:
-  #     - 27019
-  #   ports:
-  #     - 27019:27017
-  #   environment:
-  #     - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary-2
-  #     - MONGODB_REPLICA_SET_MODE=secondary
-  #     - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
-  #     - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
-  #     - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
-  #     - MONGODB_REPLICA_SET_NAME=rs0
-  #     - MONGODB_REPLICA_SET_KEY=replicasetkey123
-
-  # mongodb-arbiter:
-  #   image: "bitnami/mongodb:6.0"
-  #   container_name: mongodb-arbiter
-  #   hostname: mongodb-arbiter
-  #   depends_on:
-  #     - mongodb-primary
-  #   networks:
-  #     default:
-  #   expose:
-  #     - 27020
-  #   ports:
-  #     - 27020:27017
-  #   environment:
-  #     - MONGODB_ADVERTISED_HOSTNAME=mongodb-arbiter
-  #     - MONGODB_REPLICA_SET_MODE=arbiter
-  #     - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
-  #     - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
-  #     - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
-  #     - MONGODB_REPLICA_SET_NAME=rs0
-  #     - MONGODB_REPLICA_SET_KEY=replicasetkey123
+  mongodb-arbiter:
+    image: "bitnami/mongodb:6.0"
+    container_name: mongodb-arbiter
+    hostname: mongodb-arbiter
+    depends_on:
+      - mongodb-primary
+    networks:
+      default:
+    expose:
+      - 27020
+    ports:
+      - 27020:27017
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-arbiter
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_NAME=rs0
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123

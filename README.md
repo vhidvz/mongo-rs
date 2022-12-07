@@ -3,6 +3,7 @@
 Mongo replication set with four nodes, run and start with docker compose:
 
 ```sh
+sudo mkdir -p -m 777 mongo/primary
 sudo chown -R 1001 mongo 
 ```
 
